@@ -6,17 +6,22 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import { SongsService } from './songs.service';
 import { CreateSongDTO } from './create-song.dto';
 import { identity } from 'rxjs';
+import { ExecutionTime } from 'src/ExecutionTime';
+import { ValidationTypes } from 'class-validator';
 
 @Controller('songs')
 export class SongsController {
   constructor(private songService: SongsService) {}
 
   @Post()
-  create(@Body() createSongDTO: CreateSongDTO) {
+  @UseInterceptors(ExecutionTime)
+  create(@Body(new ValidationPipe()) createSongDTO: CreateSongDTO) {
     return this.songService.create(createSongDTO);
   }
 
